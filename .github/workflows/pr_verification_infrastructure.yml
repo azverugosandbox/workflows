@@ -42,12 +42,13 @@ jobs:
       - name: Install terraspace
         run: |
           apt update
-          apt install -y ruby-dev curl tar
+          apt install -y ruby-dev curl tar git
           gem install terraspace
           gem install bundler
+          git --version
 
-      - name: Bundle & Update terraspace
-        working-directory: ${{ inputs.app_path }}
+      - name: Clone Git Private Repo
         run: |
-          bundle install
-          bundle update terraspace
+          git clone https://github.com/azverugosandbox/tf-module
+          cd tf-module
+          ls -la
