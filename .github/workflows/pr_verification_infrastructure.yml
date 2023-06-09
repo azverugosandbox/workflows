@@ -36,19 +36,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - uses: terraform-linters/setup-tflint@v3
-        name: Setup TFLint
+      - name: Show structure
+        run: |
+          ls -la
 
-      - name: Install terraspace
+      - name: Install dependencies
         run: |
           apt update
-          apt install -y ruby-dev curl tar git
-          gem install terraspace
-          gem install bundler
+          apt install -y git
           git --version
 
-      - name: Clone Git Private Repo
+      - name: Check out my other private repo
+        uses: actions/checkout@master
+        with:
+          repository: azverugosandbox/tf-module
+
+      - name: Show structure
         run: |
-          git clone https://github.com/azverugosandbox/tf-module
-          cd tf-module
           ls -la
