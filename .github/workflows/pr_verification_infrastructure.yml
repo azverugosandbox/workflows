@@ -47,7 +47,7 @@ jobs:
           git --version
 
       - name: Check out my other private repo
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
         with:
           repository: azverugosandbox/tf-module
 
