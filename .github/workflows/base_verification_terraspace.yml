@@ -1,0 +1,92 @@
+on:
+  workflow_call:
+    inputs:
+      app_path:
+        type: string
+        required: true
+      region:
+        type: string
+        required: true
+      artifact_repo_id_ssm_name:
+        type: string
+        required: true
+
+env:
+  AWS_REGION: ${{ inputs.region }}
+  SSM_ARTIFACT_REPO_ACCOUNT_ID: ${{ inputs.artifact_repo_id_ssm_name }}
+  APP_PATH: ${{ inputs.app_path }}
+
+jobs:
+#  build:
+#    name: Build
+#    runs-on: [self-hosted, ARM64]
+#    container:
+#      image: python:3.11
+#    outputs:
+#      ARTIFACT_REPOSITORY_ACCOUNT_ID: ${{ steps.artifact_repository_id.outputs.artifact_repository_id }}
+#    steps:
+#      - name: Setup awscli
+#        run: |
+#          apt update
+#          pip install awscli
+#
+#      - name: Fetch artifact repository account id
+#        id: artifact_repository_id
+#        run: |
+#          ARTIFACT_REPOSITORY_ACCOUNT_ID=$(aws ssm get-parameter --region ${{ env.AWS_REGION }} --name ${{ env.SSM_ARTIFACT_REPO_ACCOUNT_ID }} --query 'Parameter.Value' --output text)
+#          echo "ARTIFACT_REPOSITORY_ACCOUNT_ID=${ARTIFACT_REPOSITORY_ACCOUNT_ID}" >> "$GITHUB_ENV"
+#          echo "artifact_repository_id=$ARTIFACT_REPOSITORY_ACCOUNT_ID" >> $GITHUB_OUTPUT
+
+  code_style:
+#    needs: build
+    name: Code Style Check
+    runs-on: [ self-hosted, ARM64 ]
+    container:
+      image: python:3.11
+#    env:
+#      ARTIFACT_REPOSITORY_ACCOUNT_ID: ${{ needs.build.outputs.ARTIFACT_REPOSITORY_ACCOUNT_ID }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: terraform-linters/setup-tflint@v3
+        name: Setup TFLint
+
+      - name: Install terraspace
+        run: |
+          apt update
+          apt install -y ruby-dev curl tar
+          gem install terraspace
+          gem install bundler
+
+      - name: Bundle & Update terraspace
+        working-directory: ${{ inputs.app_path }}
+        run: |
+          bundle install
+          bundle update terraspace
+
+#      - name: Install terrascan
+#        run: |
+#          curl -L "$(curl -s https://api.github.com/repos/tenable/terrascan/releases/latest | grep -o -E "https://.+?_Linux_arm64.tar.gz")" > terrascan.tar.gz
+#          tar -xf terrascan.tar.gz terrascan && rm terrascan.tar.gz
+#          install terrascan /usr/local/bin && rm terrascan
+#          terrascan
+#
+#      - name: Run terrascan
+#        working-directory: ${{ inputs.app_path }}
+#        run: |
+#          terrascan scan
+
+#      - name: Terraspace validate
+#        working-directory: ${{ inputs.app_path }}
+#        run: |
+#          terraspace all validate
+
+#      - name: Init TFLint
+#        working-directory: ${{ inputs.app_path }}
+#        run: tflint --init
+
+#      - name: Run TFLint
+#        working-directory: ${{ inputs.app_path }}
+#        run: |
+#          tflint --recursive --color

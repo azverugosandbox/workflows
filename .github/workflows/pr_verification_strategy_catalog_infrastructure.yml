@@ -1,0 +1,52 @@
+name: Strategy Catalog Infrastructure - PR verification
+
+on:
+  pull_request:
+    paths:
+      - 'test/**'
+
+jobs:
+  #  build:
+  #    name: Build
+  #    runs-on: [self-hosted, ARM64]
+  #    container:
+  #      image: python:3.11
+  #    outputs:
+  #      ARTIFACT_REPOSITORY_ACCOUNT_ID: ${{ steps.artifact_repository_id.outputs.artifact_repository_id }}
+  #    steps:
+  #      - name: Setup awscli
+  #        run: |
+  #          apt update
+  #          pip install awscli
+  #
+  #      - name: Fetch artifact repository account id
+  #        id: artifact_repository_id
+  #        run: |
+  #          ARTIFACT_REPOSITORY_ACCOUNT_ID=$(aws ssm get-parameter --region ${{ env.AWS_REGION }} --name ${{ env.SSM_ARTIFACT_REPO_ACCOUNT_ID }} --query 'Parameter.Value' --output text)
+  #          echo "ARTIFACT_REPOSITORY_ACCOUNT_ID=${ARTIFACT_REPOSITORY_ACCOUNT_ID}" >> "$GITHUB_ENV"
+  #          echo "artifact_repository_id=$ARTIFACT_REPOSITORY_ACCOUNT_ID" >> $GITHUB_OUTPUT
+
+  code_style:
+    #    needs: build
+    name: Code Style Check
+    container:
+      image: python:3.11
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: terraform-linters/setup-tflint@v3
+        name: Setup TFLint
+
+      - name: Install terraspace
+        run: |
+          apt update
+          apt install -y ruby-dev curl tar
+          gem install terraspace
+          gem install bundler
+
+      - name: Bundle & Update terraspace
+        working-directory: ${{ inputs.app_path }}
+        run: |
+          bundle install
+          bundle update terraspace

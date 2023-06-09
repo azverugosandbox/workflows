@@ -1,0 +1,13 @@
+/git
+/.idea
+/.pytest_cache
+/.venv
+.aws-sam/
+.DS_Store
+
+*.pyc
+*.iml
+
+.terraform
+.terraform.lock*
+terraform.tfstate
