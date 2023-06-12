@@ -22,3 +22,5 @@ jobs:
           echo "2 github details ${{ github.env }}"
           echo "3 github details ${{ github.ref_name }}"
           echo "4 github details ${{ github.action }}"
+          echo "5 Trigger Actor ${{ github.triggering_actor }}"
+          echo "6 Ref ${{ github.github.ref }}"
