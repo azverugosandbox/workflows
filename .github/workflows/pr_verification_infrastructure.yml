@@ -29,24 +29,29 @@ jobs:
   code_style:
     #    needs: build
     name: Code Style Check
+    runs-on: ubuntu-latest
     container:
       image: python:3.11
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - uses: terraform-linters/setup-tflint@v3
-        name: Setup TFLint
+      - name: Show structure
+        run: |
+          ls -la
 
-      - name: Install terraspace
+      - name: Install dependencies
         run: |
           apt update
-          apt install -y ruby-dev curl tar
-          gem install terraspace
-          gem install bundler
+          apt install -y git
+          git --version
 
-      - name: Bundle & Update terraspace
-        working-directory: ${{ inputs.app_path }}
+      - name: Check out my other private repo
+        uses: actions/checkout@v3
+        with:
+          repository: azverugosandbox/tf-module
+          ref: main
+
+      - name: Show structure
         run: |
-          bundle install
-          bundle update terraspace
+          ls -la
