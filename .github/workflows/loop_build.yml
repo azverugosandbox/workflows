@@ -18,4 +18,4 @@ jobs:
 
       - name: Test PR branch name
         run: |
-          echo "github details ${{ github }}"
+          echo "github details ${{ github.context }}"
