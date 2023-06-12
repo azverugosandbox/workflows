@@ -1,0 +1,22 @@
+name: Loop | Terraform AWS VPC - Build
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**'
+
+jobs:
+  build:
+    needs: basic_verifications
+    runs-on: ubuntu-latest
+    container:
+      image: python:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Test PR branch name
+        run: |
+          echo "github details ${{ github }}"
