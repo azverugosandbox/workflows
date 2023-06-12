@@ -16,3 +16,4 @@ jobs:
           echo The PR was merged
           echo "Ref ${{ github.head_ref }}"
           echo "sha ${{ github.sha }}"
+          echo "sha ${{ github.token }}"
