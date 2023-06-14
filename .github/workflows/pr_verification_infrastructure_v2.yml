@@ -35,7 +35,7 @@ jobs:
       - name: Show structure
         shell: bash
         run: |
-          if [[ ${{ needs.code_style.result }} == "failure" ]]; then
+          if [[ ${{ needs.code_style.result }} != "success" ]]; then
             echo "needs result ${{needs.code_style.result}}"
             exit 1
           fi
