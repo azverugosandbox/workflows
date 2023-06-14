@@ -3,7 +3,7 @@ name: Strategy Catalog Infrastructure - PR verification
 on:
   pull_request:
     paths:
-      - '**'
+      - 'test/**'
 
 jobs:
   #  build:
@@ -43,7 +43,7 @@ jobs:
   test:
     if: always()
     needs: code_style
-    name: Test
+    name: Test 2
     runs-on: ubuntu-latest
     container:
       image: python:3.11

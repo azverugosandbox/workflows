@@ -19,12 +19,11 @@ jobs:
       - name: Show structure
         run: |
           ls -la
-          exit 1
 
   test:
-#    if: always()
+    if: always()
     needs: code_style
-    name: Test
+    name: Test 1
     runs-on: ubuntu-latest
     container:
       image: python:3.11
