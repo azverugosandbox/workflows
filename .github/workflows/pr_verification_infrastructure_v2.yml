@@ -35,8 +35,7 @@ jobs:
       - name: Show structure
         shell: bash
         run: |
-          ls -la
           if [[ ${{ needs.code_style.result }} == "failure" ]]; then
+            echo "needs result ${{needs.code_style.result}}"
             exit 1
           fi
-          echo "needs result ${{needs.code_style.result}}"
