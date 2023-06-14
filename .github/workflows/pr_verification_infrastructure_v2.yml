@@ -19,9 +19,10 @@ jobs:
       - name: Show structure
         run: |
           ls -la
+          exit 1
 
   test:
-    if: always()
+#    if: always()
     needs: code_style
     name: Test
     runs-on: ubuntu-latest
