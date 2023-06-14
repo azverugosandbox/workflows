@@ -41,6 +41,7 @@ jobs:
           ls -la
 
   test:
+    if: always()
     needs: code_style
     name: Test
     runs-on: ubuntu-latest
