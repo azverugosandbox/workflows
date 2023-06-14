@@ -19,6 +19,7 @@ jobs:
       - name: Show structure
         run: |
           ls -la
+          exit 1
 
   test:
     needs: code_style
@@ -33,4 +34,3 @@ jobs:
       - name: Show structure
         run: |
           ls -la
-          exit 1
