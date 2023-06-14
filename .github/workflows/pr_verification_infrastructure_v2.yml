@@ -1,0 +1,35 @@
+name: Strategy Catalog Infrastructure - PR verification
+
+on:
+  pull_request:
+    paths:
+      - '**'
+
+jobs:
+  code_style:
+    #    needs: build
+    name: Code Style Check
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.11
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Show structure
+        run: |
+          ls -la
+
+  test:
+    needs: code_style
+    name: Test
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.11
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Show structure
+        run: |
+          ls -la
