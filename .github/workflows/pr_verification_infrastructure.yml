@@ -3,7 +3,7 @@ name: Strategy Catalog Infrastructure - PR verification
 on:
   pull_request:
     paths:
-      - 'test/**'
+      - '**'
 
 jobs:
   #  build:
@@ -40,17 +40,15 @@ jobs:
         run: |
           ls -la
 
-      - name: Install dependencies
-        run: |
-          apt update
-          apt install -y git
-          git --version
-
-      - name: Check out my other private repo
+  test:
+    needs: code_style
+    name: Test
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.11
+    steps:
+      - name: Checkout
         uses: actions/checkout@v3
-        with:
-          repository: azverugosandbox/tf-module
-          ref: main
 
       - name: Show structure
         run: |
