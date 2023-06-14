@@ -33,6 +33,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Show structure
+        shell: bash
         run: |
           ls -la
+          if [[ ${{ needs.code_style.result }} == "failure" ]]; then
+            exit 1
+          fi
           echo "needs result ${{needs.code_style.result}}"
