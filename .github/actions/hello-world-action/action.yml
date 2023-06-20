@@ -13,3 +13,4 @@ runs:
       shell: bash
       run: |
         echo "Hello action ${{ inputs.name }}"
+        exit 1
