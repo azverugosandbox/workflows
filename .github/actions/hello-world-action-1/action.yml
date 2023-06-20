@@ -12,7 +12,4 @@ runs:
     - name: say hello
       shell: bash
       run: |
-        echo "Hello action ${{ inputs.name }}"
-
-    - name: say Hello 1
-      uses: ./.github/actions/hello-world-action-1
+        echo "Hello action 1 ${{ inputs.name }}"
