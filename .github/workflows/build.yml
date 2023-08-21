@@ -13,6 +13,8 @@ permissions:
 
 jobs:
   build:
+    environment:
+      name: dev-dev
     runs-on: ubuntu-latest
     container:
       image: python:latest
