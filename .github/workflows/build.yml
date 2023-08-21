@@ -46,5 +46,3 @@ jobs:
           echo "4 github details ${{ github.action }}"
           echo "5 Trigger Actor ${{ github.triggering_actor }}"
           echo "6 Ref ${{ github.github.ref }}"
-
-
