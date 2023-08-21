@@ -1,0 +1,44 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: python:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Dependencies
+        run: |
+          pip install awscli
+
+      - name: Assume Role
+        run: |
+          ASSUME_ROLE_OUT=$(aws sts assume-role \
+            --role-arn arn:aws:iam::775129339279:role/GithubIntegrationRole \
+            --role-session-name Custom-SessionName
+          aws configure set --profile githubAction aws_access_key_id $(echo $ASSUME_ROLE_OUT | jq -r '.Credentials''.AccessKeyId')
+          aws configure set --profile githubAction aws_secret_access_key $(echo $ASSUME_ROLE_OUT | jq -r '.Credentials''.SecretAccessKey')
+          aws configure set --profile githubAction aws_session_token $(echo $ASSUME_ROLE_OUT | jq -r '.Credentials''.SessionToken')
+          echo "AWS_DEFAULT_PROFILE=githubAction" >> "$GITHUB_ENV"
+
+      - name: Get Current Session
+        run: |
+          aws sts get-caller-identity
+
+      - name: Test PR branch name
+        run: |
+          echo "1 github details ${{ github.event }}"
+          echo "2 github details ${{ github.env }}"
+          echo "3 github details ${{ github.ref_name }}"
+          echo "4 github details ${{ github.action }}"
+          echo "5 Trigger Actor ${{ github.triggering_actor }}"
+          echo "6 Ref ${{ github.github.ref }}"
