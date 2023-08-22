@@ -1,0 +1,38 @@
+name: Test - Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      ecosystem:
+        description: Ecosystem
+        required: true
+        type: choice
+        options:
+          - dev
+          - prod
+      environment:
+        description: Environment
+        required: true
+        type: choice
+        options:
+          - dev
+          - qa
+          - preview
+          - demo
+          - prod
+
+env:
+  ROLE_SESSION_NAME: CDPipeline-Session
+  APP_NAME: dashboard-client
+  ARTIFACT_REGION: us-east-2
+  REPOSITORY: experience
+  DOMAIN: clearalpha
+  ECOSYSTEM: ${{ env.ecosystem }}
+
+jobs:
+  validate-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Additional Tools
+        run: |
+          echo ${{ env.ECOSYSTEM }}
