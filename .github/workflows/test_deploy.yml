@@ -27,7 +27,7 @@ env:
   ARTIFACT_REGION: us-east-2
   REPOSITORY: experience
   DOMAIN: clearalpha
-  ECOSYSTEM: ${{ env.ecosystem }}
+  ECOSYSTEM: ${{ inputs.ecosystem }}
 
 jobs:
   validate-inputs:
