@@ -1,0 +1,62 @@
+name: Web Service - Deploy
+
+on:
+  workflow_dispatch:
+
+env:
+  ROLE_SESSION_NAME: CDPipeline-Session
+  APP_NAME: strategy-catalog
+
+jobs:
+  open_issue:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read  # This is required for actions/checkout
+    outputs:
+      issue-number: ${{ steps.create-issue.outputs.number }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create an issue
+        uses: JasonEtco/create-an-issue@v2
+        id: create-issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ENVIRONMENT: dev
+          ECOSYSTEM: dev
+          APP_NAME: "Strategy Catalog"
+          INPUTS: '
+            input
+          '
+          PIPELINE_LINK: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          RUNNUMBER: ${{ github.run_number }}
+        with:
+          filename: .github/issues/deployment_request.md
+      - run: 'echo Created issue number ${{ steps.create-issue.outputs.number }}'
+
+  deploy_app:
+    needs: open_issue
+    permissions:
+      id-token: write # This is required for requesting the JWT
+      contents: read  # This is required for actions/checkout
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hello
+        run: |
+          echo 'Hello'
+
+  close_issue:
+    needs: [ open_issue, deploy_app ]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read  # This is required for actions/checkout
+    steps:
+      - name: Close Issue
+        uses: peter-evans/close-issue@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ needs.open_issue.outputs.issue-number }}
+          comment: 'Deployment status - ${{ needs.deploy_app.result }}'
