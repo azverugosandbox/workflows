@@ -51,6 +51,12 @@ jobs:
       issues: write
       contents: read  # This is required for actions/checkout
     steps:
+      - name: add label
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          number: ${{ needs.open_issue.outputs.issue-number }}
+          labels: ${{ needs.deploy_app.result }}
+
       - name: Close Issue
         uses: peter-evans/close-issue@v3
         with:
