@@ -32,6 +32,7 @@ jobs:
           PIPELINE_LINK: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           RUNNUMBER: ${{ github.run_number }}
         with:
+          assignees: ${{ github.actor }}
           filename: .github/issues/deployment_request.md
       - run: 'echo Created issue number ${{ steps.create-issue.outputs.number }}'
 
@@ -51,11 +52,11 @@ jobs:
       issues: write
       contents: read  # This is required for actions/checkout
     steps:
-      - name: add label
-        uses: actions-ecosystem/action-add-labels@v1
-        with:
-          number: ${{ needs.open_issue.outputs.issue-number }}
-          labels: ${{ needs.deploy_app.result }}
+        - name: add label
+          uses: actions-ecosystem/action-add-labels@v1
+          with:
+            number: ${{ needs.open_issue.outputs.issue-number }}
+            labels: ${{ needs.deploy_app.result }}
 
       - name: Close Issue
         uses: peter-evans/close-issue@v3
