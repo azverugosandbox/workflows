@@ -54,6 +54,7 @@ jobs:
         run: |
           echo "Repository Dispatch:"
           client_payload="${{ toJson(github.event.client_payload) }}"
+          client_payload=$(echo "$client_payload" | jq -c '.')
 
           environment=$(echo $client_payload | jq -r '.environment')
           version=$(echo $client_payload | jq -r '.version')
