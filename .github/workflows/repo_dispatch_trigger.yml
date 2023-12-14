@@ -9,18 +9,16 @@ on:
 
 jobs:
   trigger:
+    permissions: write-all
     runs-on: ubuntu-latest
     container:
       image: python:latest
     steps:
-      - name: Git clone the repository
-        uses: actions/checkout@v3
-
       - name: Install additional tools
         run: |
           apt update && apt install -y curl
 
-      - name: Test PR branch name
+      - name: Trigger Deploy
         run: |
           curl -L \
             -X POST \
