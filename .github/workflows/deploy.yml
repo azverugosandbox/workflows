@@ -28,7 +28,9 @@ jobs:
   init:
     runs-on: ubuntu-latest
     outputs:
-      stack_groups: ${{ steps.get_stack_groups.outputs.stack_groups }}
+      ENVIRONMENT: ${{ steps.set_outputs.outputs.ENVIRONMENT }}
+      VERSION: ${{ steps.set_outputs.outputs.VERSION }}
+      STACKS: ${{ steps.set_outputs.outputs.STACKS }}
     steps:
       - name: Install additional tools
         run: |
@@ -51,9 +53,12 @@ jobs:
         if: github.event_name == 'repository_dispatch'
         run: |
           echo "Repository Dispatch:"
-          echo "payload: ${{ github.event.client_payload }}"
+          echo "payload: ${{ toJson(github.event.client_payload) }}"
 
       - name: Set Outputs
         id: set_outputs
         run: |
           echo 'print'
+          echo "ENVIRONMENT=${{ env.ENVIRONMENT }}" >> $GITHUB_OUTPUT
+          echo "VERSION=${{ env.VERSION }}" >> $GITHUB_OUTPUT
+          echo "STACKS=${{ env.STACKS }}" >> $GITHUB_OUTPUT
