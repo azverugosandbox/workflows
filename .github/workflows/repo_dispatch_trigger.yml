@@ -9,9 +9,9 @@ on:
 
 jobs:
   trigger:
-    permissions:
-      contents: write
-      metadata: read
+    environment:
+      name: dev
+    permissions: write-all
     runs-on: ubuntu-latest
     container:
       image: python:latest
