@@ -25,10 +25,10 @@ on:
         type: string
 
 jobs:
-  open_issue:
+  init:
     runs-on: ubuntu-latest
     steps:
-      - name: Print Inputs
+      - name: Print Workflow Dispatch Inputs
         if: github.event_name == 'workflow_dispatch'
         run: |
           echo "Workflow Dispatch:"
@@ -36,7 +36,7 @@ jobs:
           echo "Version: ${{ inputs.version }}"
           echo "Stacks: ${{ inputs.stacks }}"
 
-      - name: Print Inputs
+      - name: Print Repository Dispatch Inputs
         if: github.event_name == 'repository_dispatch'
         run: |
           echo "Repository Dispatch:"
