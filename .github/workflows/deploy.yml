@@ -53,12 +53,19 @@ jobs:
         if: github.event_name == 'repository_dispatch'
         run: |
           echo "Repository Dispatch:"
-          echo "payload: ${{ toJson(github.event.client_payload) }}"
+          client_payload="${{ toJson(github.event.client_payload) }}"
+
+          environment=$(echo $client_payload | jq -r '.environment')
+          version=$(echo $client_payload | jq -r '.version')
+          stacks=$(echo $client_payload | jq -r '.stacks')
+
+          echo "ENVIRONMENT=$environment" >> $GITHUB_ENV
+          echo "VERSION=$version" >> $GITHUB_ENV
+          echo "STACKS=$stacks" >> $GITHUB_ENV
 
       - name: Set Outputs
         id: set_outputs
         run: |
-          echo 'print'
           echo "ENVIRONMENT=${{ env.ENVIRONMENT }}" >> $GITHUB_OUTPUT
           echo "VERSION=${{ env.VERSION }}" >> $GITHUB_OUTPUT
           echo "STACKS=${{ env.STACKS }}" >> $GITHUB_OUTPUT
