@@ -57,11 +57,11 @@ jobs:
 
           echo "Payload: $client_payload"
 
-          client_payload=$(echo '$client_payload' | jq -c '.')
+          client_payload=$(echo "$client_payload" | tr -d '\n' | jq -c '.')
 
-          environment=$(echo '$client_payload' | jq -r '.environment')
-          version=$(echo '$client_payload' | jq -r '.version')
-          stacks=$(echo '$client_payload' | jq -r '.stacks')
+          environment=$(echo "$client_payload" | jq '.environment')
+          version=$(echo "$client_payload" | jq '.version')
+          stacks=$(echo "$client_payload" | jq '.stacks')
 
           echo "ENVIRONMENT=$environment" >> $GITHUB_ENV
           echo "VERSION=$version" >> $GITHUB_ENV
