@@ -1,0 +1,43 @@
+name: Deploy
+
+on:
+  repository_dispatch:
+    types: [deploy]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version (SHA or SemVer)'
+        required: true
+        type: string
+        default: 'latest'
+      environment:
+        description: 'Environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - preview
+          - prod
+      stacks:
+        description: 'Stacks (comma separated string)'
+        required: true
+        type: string
+
+jobs:
+  open_issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Inputs
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          echo "Workflow Dispatch:"
+          echo "Environment: ${{ inputs.environment }}"
+          echo "Version: ${{ inputs.version }}"
+          echo "Stacks: ${{ inputs.stacks }}"
+
+      - name: Print Inputs
+        if: github.event_name == 'repository_dispatch'
+        run: |
+          echo "Repository Dispatch:"
+          'echo "payload: ${{ toJson(github.event.client_payload) }}"'
