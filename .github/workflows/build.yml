@@ -40,7 +40,8 @@ jobs:
 #        run: |
 #          aws sts get-caller-identity
 
-      - name: Get Source Branch Name
+      - name: Get Changes Type Based on Source Branch Name
+        shell: bash
         run: |
           COMMIT_SHA=${{ github.sha }}
 
@@ -52,6 +53,26 @@ jobs:
           SOURCE_BRANCH=$(echo "$PR_JSON" | jq -r '.[0].head.ref')
 
           echo "Source Branch Name: $SOURCE_BRANCH"
+
+          if [[ "$SOURCE_BRANCH" =~ ^(major/|minor/|patch/).*$ ]]; then
+            CHANGES_TYPE=${SOURCE_BRANCH%%/*}
+          fi
+
+          echo "Changes Type: $CHANGES_TYPE"
+          echo "CHANGE_TYPE=$CHANGES_TYPE" >> $GITHUB_ENV
+
+      - name: Get Changes Type Based on Commit Message
+        if: ${{ env.CHANGE_TYPE == '' }}
+        run: |
+          COMMIT_SHA=${{ github.sha }}
+
+          COMMIT_JSON=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                        "https://api.github.com/repos/${{ github.repository }}/commits/$COMMIT_SHA")
+
+          # Extract commit title from the commit details
+          COMMIT_TITLE=$(echo "$COMMIT_JSON" | jq -r '.commit.message')
+
+          echo "Commit Title: $COMMIT_TITLE"
 
       - name: Test PR branch name
         continue-on-error: true
