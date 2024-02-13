@@ -16,6 +16,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: say hello with delay
+        shell: bash
+        run: |
+          sleep 180s
+          echo "Hello action ${{ inputs.name }}"
+
       - name: Show structure
         run: |
           ls -la
