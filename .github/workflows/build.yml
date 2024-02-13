@@ -40,6 +40,9 @@ jobs:
 #        run: |
 #          aws sts get-caller-identity
 
+      - name: Fix dubious ownership in repository
+        run: git config --global --add safe.directory "/__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}"
+
       - name: Get Source Branch Name
         run: |
           # Extract commit SHA from the push event
