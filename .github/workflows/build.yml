@@ -24,6 +24,8 @@ jobs:
 
       - name: Dependencies
         run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
           pip install awscli
 
 #      - name: configure aws credentials
@@ -38,7 +40,22 @@ jobs:
 #        run: |
 #          aws sts get-caller-identity
 
+      - name: Get Source Branch Name
+        run: |
+          # Extract commit SHA from the push event
+          COMMIT_SHA=$(git rev-parse HEAD)
+
+          # Fetch pull request details using GitHub API
+          PR_JSON=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                    "https://api.github.com/repos/${{ github.repository }}/commits/$COMMIT_SHA/pulls")
+
+          # Extract source branch from the pull request details
+          SOURCE_BRANCH=$(echo "$PR_JSON" | jq -r '.[0].head.ref')
+
+          echo "Source Branch Name: $SOURCE_BRANCH"
+
       - name: Test PR branch name
+        continue-on-error: true
         run: |
           echo "Github object ${{ toJson(github) }}"
           echo "1 github details ${{ toJson(github.event) }}"
