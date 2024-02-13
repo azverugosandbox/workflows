@@ -50,7 +50,7 @@ jobs:
                     "https://api.github.com/repos/${{ github.repository }}/commits/$COMMIT_SHA/pulls")
 
           # Extract source branch from the pull request details
-          SOURCE_BRANCH=$(echo "$PR_JSON" | jq -r '.[0].head.ref')
+          SOURCE_BRANCH=$(echo "$PR_JSON" | jq -cr '.[0].head.ref')
 
           echo "Source Branch Name: $SOURCE_BRANCH"
 
@@ -63,16 +63,17 @@ jobs:
 
       - name: Get Changes Type Based on Commit Message
         if: ${{ env.CHANGE_TYPE == '' }}
+        shell: bash
         run: |
-          COMMIT_SHA=${{ github.sha }}
+          COMMIT_TITLE=${{ github.event.head_commit.message }}
+          COMMIT_TITLE=$(echo "$COMMIT_TITLE" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
 
-          COMMIT_JSON=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                        "https://api.github.com/repos/${{ github.repository }}/commits/$COMMIT_SHA")
+          if [[ "$(echo "$COMMIT_TITLE" | tr '[:upper:]' '[:lower:]')" =~ ^(patch|minor|major) ]]; then
+            CHANGES_TYPE="${BASH_REMATCH[1]}"
+          fi
 
-          # Extract commit title from the commit details
-          COMMIT_TITLE=$(echo "$COMMIT_JSON" | jq -r '.commit.message')
-
-          echo "Commit Title: $COMMIT_TITLE"
+          echo "Changes Type: $CHANGES_TYPE"
+          echo "CHANGE_TYPE=$CHANGES_TYPE" >> $GITHUB_ENV
 
       - name: Test PR branch name
         continue-on-error: true
