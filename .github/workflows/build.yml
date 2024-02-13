@@ -65,7 +65,7 @@ jobs:
         if: ${{ env.CHANGE_TYPE == '' }}
         shell: bash
         run: |
-          COMMIT_TITLE=${{ github.event.head_commit.message }}
+          COMMIT_TITLE="${{ github.event.head_commit.message }}"
           COMMIT_TITLE=$(echo "$COMMIT_TITLE" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
 
           if [[ "$(echo "$COMMIT_TITLE" | tr '[:upper:]' '[:lower:]')" =~ ^(patch|minor|major) ]]; then
