@@ -49,6 +49,7 @@ jobs:
           PR_JSON=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
                     "https://api.github.com/repos/${{ github.repository }}/commits/$COMMIT_SHA/pulls")
 
+          echo "PR_JSON: $PR_JSON"
           # Extract source branch from the pull request details
           SOURCE_BRANCH=$(echo "$PR_JSON" | jq -cr '.[0].head.ref')
 
