@@ -1,9 +1,9 @@
-name: Strategy Catalog Infrastructure - PR verification
+name: PR verification
 
 on:
   pull_request:
     paths:
-      - 'test/**'
+      - '**'
 
 jobs:
   #  build:
@@ -35,6 +35,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Dependencies
+        run: |
+          pip install awscli
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::775129339279:role/GithubIntegrationRole
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: "us-east-2"
+
+      - name: Sts GetCallerIdentity
+        run: |
+          aws sts get-caller-identity
 
       - name: Show structure
         run: |
